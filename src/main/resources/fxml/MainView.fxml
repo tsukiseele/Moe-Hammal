@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <BorderPane>
+            <center>
+                <SplitPane dividerPositions="0.8" orientation="VERTICAL" minHeight="512" >
+                    <items>
+                        <StackPane fx:id="imageMasonryView" style="-fx-background-color: White"/>
+                        <StackPane fx:id="optionsView" minHeight="150" maxHeight="250" style="-fx-background-color: White"/>
+                    </items>
+                </SplitPane>
+            </center>
+            <right>
+                <StackPane fx:id="downloadView"/>
+            </right>
+        </BorderPane>
+    </children>
+</StackPane>

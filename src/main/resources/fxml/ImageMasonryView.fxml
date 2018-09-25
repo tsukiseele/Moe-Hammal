@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" >
+    <children>
+        <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER" >
+            <JFXMasonryPane fx:id="masonryPane" HSpacing="5" VSpacing="15" style="-fx-background-color: White">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            </JFXMasonryPane>
+        </ScrollPane>
+    </children>
+</StackPane>
