@@ -47,15 +47,17 @@ public class ImageMasonryController {
 		}
 		masonryPane.getChildren().addAll(children);
 
-//		Platform.runLater(() -> scrollPane.requestLayout());
-//		JFXScrollPane.smoothScrolling(scrollPane);
+		Platform.runLater(() -> scrollPane.requestLayout());
+		JFXScrollPane.smoothScrolling(scrollPane);
 	}
+
 	public void addImage(Image image) {
 		masonryPane.getChildren().add(ImageItemFactory.createItem(image, () -> {
 			masonryPane.clearLayout();
 			masonryPane.requestLayout();
 		}));
 	}
+
 	public void clear() {
 		masonryPane.getChildren().clear();
 	}

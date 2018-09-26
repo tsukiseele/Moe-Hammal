@@ -24,10 +24,6 @@ public class DownloadItemFactory {
 		root.setPrefWidth(0);
 		title.setText(task.getInfo().fileName);
 		progressBar.getStyleClass().add("custom-jfx-progress-bar-stroke");
-		//progressBar.setPrefWidth(250 - message.getPrefWidth());
-//		progressContainer.setAlignment(Pos.CENTER_LEFT);
-//		progressContainer.setPrefWidth(root.getPrefWidth());
-//		progressContainer.getChildren().addAll(progressBar, message);
 		root.getChildren().addAll(title, progressBar, message);
 		task.addDownloadCallback(new SyncDownloadCallback(new DownloadCallback() {
 			@Override

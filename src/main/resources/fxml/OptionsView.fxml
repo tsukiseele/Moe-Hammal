@@ -18,12 +18,12 @@
 
         <JFXTextField id="optionsStartPageCodeInput" promptText="Start page" labelFloat="true" alignment="CENTER"
                       style="-fx-max-width: 80;" >
-
+            1
         </JFXTextField>
 
         <JFXTextField id="optionsEndPageCodeInput" promptText="End page" labelFloat="true" alignment="CENTER"
                       style="-fx-max-width: 80;" >
-
+            1
         </JFXTextField>
     </HBox>
     <HBox alignment="BOTTOM_CENTER" spacing="10">
