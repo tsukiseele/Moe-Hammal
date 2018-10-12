@@ -22,6 +22,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import static com.tsukiseele.moecrawler.core.Const.PATTERN_CONTENT_PAGE;
+
 /**
  * 核心类，解析文档数据
  *
@@ -42,7 +44,7 @@ public class MoeParser<T extends Mappable> {
 		this.type = type;
 	}
 
-	/*
+	/**
 	 * 深度解析规则，返回数据组集合，该操作极其耗时
 	 *
 	 */
@@ -82,7 +84,7 @@ public class MoeParser<T extends Mappable> {
 		
 		return new Gallery<T>(datas, crawler.getSection(), crawler.getMode().pageCode, crawler.getMode().extraKey);
 	}
-	/*
+	/**
 	 * 用于解析首页
 	 *
 	 */
@@ -122,20 +124,23 @@ public class MoeParser<T extends Mappable> {
 		Section section = crawler.getSection();
 		Catalog<T> catalog = new Catalog<>(section, map);
 		Map<String, Selector> catalogSelectors = section.getCatalogSelectors();
-		// 匹配正则代表存在多页
-		if (map.getCatalogUrl().matches(Const.REGEX_CONTENT_PAGE.toString())) {
-			// flag保存上一页的数据，用于检测是否重复爬取
+
+		Matcher matcher = PATTERN_CONTENT_PAGE.matcher(map.getCatalogUrl());
+		if (matcher.find()) {
+			// 匹配正则代表存在多页
+			System.out.println("--------------------- 匹配到多页数据");
+			// flag保存上一页的数据，用于检测是否重复爬取，防止死循环
 			T flag = null;
+			List<T> datas;
 			while (true) {
-				List<T> dats = null;
 				String mUrl = Crawler.replacePageCode(map.getCatalogUrl(), catalog.pageCode++);
 				String html = crawler.request(mUrl);
-				dats = parseHtmlDocument(Jsoup.parse(html), catalogSelectors, type);
+				datas = parseHtmlDocument(Jsoup.parse(html), catalogSelectors, type);
 				// 数据集为空直接返回
-				if (dats != null && dats.size() > 0) {
-					if (flag == null || dats.get(0).hashCode() != flag.hashCode()) {
-						catalog.addAll(dats);
-						flag = dats.get(0);
+				if (datas != null && datas.size() > 0) {
+					if (flag == null || datas.get(0).hashCode() != flag.hashCode()) {
+						catalog.addAll(datas);
+						flag = datas.get(0);
 					} else break;
 				} else break;
 			}
@@ -160,7 +165,7 @@ public class MoeParser<T extends Mappable> {
 		}
 	}
 	
-	/*
+	/**
 	 * @parem doc 需要解析的Html文档
 	 * @param selectors 选择器组
 	 * @param type 生成的数据类型
@@ -220,53 +225,64 @@ public class MoeParser<T extends Mappable> {
 		List<String> datas = new ArrayList<String>();
 
 		// 利用选择器获取
-		if (!TextUtil.isEmpty(selector.selector)) {
+		if (TextUtil.nonEmpty(selector.selector)) {
 			selector.init();
 			Elements es = doc.select(selector.selector);
 			for (int i = 0; i < es.size(); i++) {
 				Element e = es.get(i);
 				LogUtil.i("parseHtmlElement", e.toString());
 
-				String data = null;
+				String content = null;
 				if (selector.fun != null) {
 					switch (selector.fun) {
 						case "attr" :
-							data = e.attr(selector.attr);
+							content = e.attr(selector.attr);
 							break;
 						case "html" :
-							data = e.toString();
+							content = e.toString();
 							break;
 						case "text" :
-							data = e.text();
+							content = e.text();
 							break;
 						default :
-							data = e.toString();
+							content = e.toString();
 					}
 				} else {
-					data = e.toString();
+					content = e.toString();
 				}
-				data = replectContent(data, selector.capture, selector.replacement);
-
-				if (!TextUtil.isEmpty(data))
-					datas.add(data);
+//				if (TextUtil.nonEmpty(selector.regex)) {
+//					Pattern pattern = Pattern.compile(selector.regex, Pattern.DOTALL);
+//					Matcher matcher = pattern.matcher(content);
+//					if (matcher.find()) {
+//						content = matcher.group(1);
+////						String item = matcher.group(1);
+////						if (TextUtil.nonEmpty(item))
+////							content = item;
+////						else
+////							content = "unknown";
+//					}
+//				}
+				content = replaceContent(content, selector.capture, selector.replacement);
+				if (!TextUtil.isEmpty(content))
+					datas.add(content);
 			}
 			// 利用正则获取
-		} else if (!TextUtil.isEmpty(selector.regex)) {
+		} else if (TextUtil.nonEmpty(selector.regex)) {
 			Pattern pattern = Pattern.compile(selector.regex, Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(doc.toString());
 			while (matcher.find()) {
-				String data = replectContent(matcher.group(), selector.capture, selector.replacement);
-
-				if (!TextUtil.isEmpty(data))
+				String item = matcher.group(1);
+				String data = replaceContent(item, selector.capture, selector.replacement);
+				if (TextUtil.nonEmpty(data))
 					datas.add(data);
 			}
 		}
 		return datas.toArray(new String[datas.size()]);
 	}
 	/**
-	 * @param text 待处理的文本
-	 * @param captureRegex 截取正则式
-	 * @param replaceRegex 替换式
+	 * @param content 待处理的文本
+	 * @param capture 截取正则式
+	 * @param replacement 替换式
 	 *
 	 * @return 替换后的文本
 	 *
@@ -275,16 +291,16 @@ public class MoeParser<T extends Mappable> {
 	 * 	匹配式或替换式非空，则替换内容，返回替换后的替换式
 	 * 		未匹配到内容或其他原因，返回空串
 	 */
-	private static String replectContent(String text, String captureRegex, String replaceRegex) {
-		if (captureRegex == null || "".equals(captureRegex.trim()) ||
-			replaceRegex == null || "".equals(replaceRegex.trim())) {
-			return text;
+	private static String replaceContent(String content, String capture, String replacement) {
+		if (capture == null || "".equals(capture.trim()) ||
+			replacement == null || "".equals(replacement.trim())) {
+			return content;
 		}
 		Matcher matcher = null;
 		List<String> groups = new ArrayList<>();
 		List<Integer> indexs = new ArrayList<>();
 
-		matcher = Pattern.compile(captureRegex).matcher(text);
+		matcher = Pattern.compile(capture).matcher(content);
 
 		// 提取捕获组
 		if (matcher.find()) {
@@ -293,15 +309,15 @@ public class MoeParser<T extends Mappable> {
 				groups.add(matcher.group(i));
 
 			// 提取替换式索引
-			matcher = Pattern.compile("(?<=\\$)\\d").matcher(replaceRegex);
+			matcher = Pattern.compile("(?<=\\$)\\d").matcher(replacement);
 			while (matcher.find())
 				indexs.add(Integer.valueOf(matcher.group()));
 
 			// 根据索引替换内容
 			for (int index : indexs)
 				if (index >= 0 && index < groups.size())
-					replaceRegex = replaceRegex.replaceAll("\\$" + index, groups.get(index));
-			return replaceRegex;
+					replacement = replacement.replaceAll("\\$" + index, groups.get(index));
+			return replacement;
 		}
 		return "";
 	}

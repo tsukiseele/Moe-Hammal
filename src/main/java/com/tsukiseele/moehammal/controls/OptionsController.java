@@ -9,11 +9,18 @@ import com.tsukiseele.moecrawler.core.MoeParser;
 import com.tsukiseele.moecrawler.download.DownloadManager;
 import com.tsukiseele.moecrawler.download.DownloadTask;
 import com.tsukiseele.moecrawler.utils.TextUtil;
+import com.tsukiseele.moecrawler.utils.UniversalUtil;
 import com.tsukiseele.moehammal.MainApplication;
 import com.tsukiseele.moehammal.bean.Image;
-import com.tsukiseele.moehammal.config.Config;
+import com.tsukiseele.moehammal.app.Config;
+import com.tsukiseele.moehammal.controls.windows.ImageCatalogWindow;
+import com.tsukiseele.moehammal.controls.windows.ImageViewerWindow;
+import com.tsukiseele.moehammal.helper.WindowManager;
 import com.tsukiseele.moehammal.helper.SiteRuleManager;
 import io.datafx.controller.ViewController;
+import io.datafx.controller.flow.FlowException;
+import io.datafx.controller.flow.context.FXMLViewFlowContext;
+import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
@@ -32,8 +40,12 @@ import java.util.List;
 
 @ViewController(value = "/fxml/OptionsView.fxml")
 public class OptionsController {
+	@FXMLViewFlowContext
+	private ViewFlowContext context;
 	@FXML
 	private JFXComboBox<Label> optionsSiteCombo;
+	@FXML
+	private JFXComboBox<Label> optionsQualityCombo;
 	@FXML
 	private JFXTextField optionsSearchInput;
 	@FXML
@@ -42,6 +54,8 @@ public class OptionsController {
 	private JFXTextField optionsEndPageCodeInput;
 	@FXML
 	private Label optionsCurrentPageText;
+	@FXML
+	private JFXSpinner optionsLoadProgress;
 
 	private List<Site> sites;
 	private MoeCrawler crawler;
@@ -49,13 +63,16 @@ public class OptionsController {
 	private Gallery<Image> images;
 	private MoeParser<Image> parser;
 
+	private static String imageUrlFlag = Image.URL_SIMPLE;
 	private boolean isDownloadStateFlag = false;
 
 	@PostConstruct
 	public void init() {
-		MainApplication.getContext().register("Options", this);
+		context.register("Options", this);
 		// 初始化规则选择栏
 		updateSiteCombo();
+		// 初始化品质选择框
+		initQualityCombo();
 
 		// 初始化页码输入框
 		optionsStartPageCodeInput.focusedProperty().addListener((obj, oldValue, newValue) -> {
@@ -66,41 +83,36 @@ public class OptionsController {
 			if (!newValue)
 				checkNumberInput(optionsEndPageCodeInput);
 		});
-	}
-	// 检验输入合法性
-	private void checkNumberInput(JFXTextField field) {
-		try {
-			String text = field.getText();
-			if (TextUtil.isEmpty(text))
-				return;
-			Integer.parseInt(text);
-		} catch (NumberFormatException e) {
-			MainApplication.showSnackbar("页码必须是整数");
-			field.clear();
-		}
-		int startValue = TextUtil.toInt(optionsStartPageCodeInput.getText());
-		int endValue = TextUtil.toInt(optionsEndPageCodeInput.getText());
-		if (startValue > endValue)
-			optionsEndPageCodeInput.setText(String.valueOf(startValue));
-	}
 
-	private void updateSiteCombo() {
-		sites = SiteRuleManager.instance().getSites();
-		String[] siteNames = new String[sites.size()];
-		for (int i = 0; i < sites.size(); i++)
-			siteNames[i] = sites.get(i).getTitle();
-		ObservableList items = FXCollections.observableArrayList(siteNames);
-		optionsSiteCombo.setItems(items);
-		optionsSiteCombo.getSelectionModel().selectFirst();
-	}
-
-	private Site getCurrentSite() {
-		return sites.get(optionsSiteCombo.getSelectionModel().getSelectedIndex());
+		optionsSearchInput.setOnKeyPressed((event -> {
+			if (event.getCode() == KeyCode.ENTER)
+				onSearchClick(null);
+		}));
 	}
 
 	@FXML
 	public void onSearchClick(ActionEvent event) {
-		ImageMasonryController controller = (ImageMasonryController) MainApplication.getContext().getRegisteredObject("ImageMasonry");
+		ImageMasonryController controller = (ImageMasonryController) context.getRegisteredObject("ImageMasonry");
+		controller.setOnItemClickListener(image -> {
+			try {
+				if (image.hasCatalog()) {
+					WindowManager.load(ImageCatalogWindow.class)
+							.putObject("crawler", crawler)
+							.putObject("image", image)
+							.create("图册")
+							.show();
+				} else {
+					WindowManager.load(ImageViewerWindow.class)
+							.putObject("crawler", crawler)
+							.putObject("image", image)
+							.create("图片预览")
+							.show();
+				}
+
+			} catch (FlowException e) {
+				e.printStackTrace();
+			}
+		});
 		isDownloadStateFlag = false;
 		controller.clear();
 		new Thread(() -> {
@@ -114,17 +126,21 @@ public class OptionsController {
 					"-fx-pref-width: 80; -fx-pref-height: 40; ");
 			button.setOnAction((actionEvent) -> {
 				dialog.close();
+				optionsLoadProgress.setVisible(false);
 				Thread.currentThread().interrupt();
 				MainApplication.showSnackbar("加载已取消");
 			});
-			// 更新视图
+			// UI操作
 			Platform.runLater(() -> {
+				// 显示加载进度条
+				optionsLoadProgress.setVisible(true);
+				// 弹出对话框
 				dialogLayout.setPadding(new Insets(5, 5, 5, 5));
 				dialogLayout.setHeading(new Label("提示"));
-				dialogLayout.setBody(new HBox(20, new JFXSpinner(), new Label("正在加载中，请耐心等待...")));
+				dialogLayout.setBody(new HBox(20, new JFXSpinner(), new Label("少女祈祷中，请耐心等待...")));
 				dialogLayout.setActions(button);
 				dialog.setContent(dialogLayout);
-				dialog.show((StackPane) MainApplication.getContext().getRegisteredObject("Root"));
+				dialog.show(MainController.getContent());
 			});
 			// 加载数据
 			DownloadManager.getThreadPool().setCorePoolSize(5);
@@ -139,28 +155,30 @@ public class OptionsController {
 					return;
 				// 更新视图
 				Platform.runLater(() -> {
-					dialog.close();
 					if (images.isEmpty()) {
 						MainApplication.showSnackbar("该页没有数据");
 					} else {
-						controller.updateImageSet(images);
+						controller.updateImageSet(crawler, images);
 						updateCurrentPageCode(crawler.getMode().pageCode);
 					}
 				});
 			} catch (IOException e) {
 				Platform.runLater(() -> {
 					MainApplication.showSnackbar("加载失败：" + e.toString());
-					dialog.close();
 				});
 				e.printStackTrace();
+			} finally {
+				// 关闭加载显示
+				optionsLoadProgress.setVisible(false);
+				dialog.close();
 			}
 		}).start();
 	}
 
 	@FXML
 	public void onDownloadClick() {
-		DownloadController downloadController = (DownloadController) MainApplication.getContext().getRegisteredObject("Download");
-		ImageMasonryController imageMasonryController = (ImageMasonryController) MainApplication.getContext().getRegisteredObject("ImageMasonry");
+		DownloadController downloadController = (DownloadController) context.getRegisteredObject("Download");
+		ImageMasonryController imageMasonryController = (ImageMasonryController) context.getRegisteredObject("ImageMasonry");
 
 		int startCode = TextUtil.toInt(optionsStartPageCodeInput.getText());
 		int endCode = TextUtil.toInt(optionsEndPageCodeInput.getText());
@@ -180,13 +198,19 @@ public class OptionsController {
 						@Override
 						public void onCatalogSuccess(Catalog<Image> datas) {
 							for (Image image : datas) {
+								System.out.println("Catalog -- " + UniversalUtil.toString(image));
 								try {
-									DownloadTask task = new DownloadTask(image.getSimpleUrl(), Config.PATH_DOWNLOAD.getAbsolutePath(), true);
+									DownloadTask task = new DownloadTask(image.getUrl(imageUrlFlag), Config.PATH_DOWNLOAD.getAbsolutePath(), true);
+									task.addRequestHeaders(crawler.getHeaders());
+									task.addRequestHeader("Referer", image.getCatalogUrl());
+									System.out.println("------------------------------------" + task.getInfo().headers);
+
 									DownloadManager.execute(task);
 									Platform.runLater(() -> {
 										downloadController.addDownloadItem(task);
 										if (isDownloadStateFlag)
-											imageMasonryController.addImageSet(datas);
+											imageMasonryController.addImageSet(crawler, datas);
+
 									});
 								} catch (UnsupportedEncodingException e) {
 									e.printStackTrace();
@@ -195,14 +219,18 @@ public class OptionsController {
 						}
 
 						@Override
-						public void onItemSuccess(Image data) {
+						public void onItemSuccess(Image image) {
 							try {
-								DownloadTask task = new DownloadTask(data.getSimpleUrl(), Config.PATH_DOWNLOAD.getAbsolutePath(), true);
+								System.out.println("Item -- " + UniversalUtil.toString(image));
+								DownloadTask task = new DownloadTask(image.getUrl(imageUrlFlag), Config.PATH_DOWNLOAD.getAbsolutePath(), true);
+								task.addRequestHeaders(crawler.getHeaders());
+								task.addRequestHeader("Referer", image.getCatalogUrl());
+								System.out.println("------------------------------------" + task.getInfo().headers);
 								DownloadManager.execute(task);
 								Platform.runLater(() -> {
 									downloadController.addDownloadItem(task);
 									if (isDownloadStateFlag)
-										imageMasonryController.addImage(data);
+										imageMasonryController.addImage(crawler, image);
 								});
 							} catch (UnsupportedEncodingException e) {
 								e.printStackTrace();
@@ -212,27 +240,6 @@ public class OptionsController {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-//				MoeCrawler crawler = MoeCrawler.with(getCurrentSite()).params(startCode);
-//				MoeParser parser = crawler.buildParser(Image.class);
-//				try {
-//					Gallery<Image> images = parser.parseGallery();
-//					for (Image image : images) {
-//						try {
-//							List<Image> imgs = parser.parseCatalog(image);
-//							for (Image img : imgs) {
-//								if (image.hasExtra())
-//									parser.parseFillExtra(img);
-//								DownloadTask task = new DownloadTask(img.getSimpleUrl(), Config.PATH_DOWNLOAD.getAbsolutePath(), true);
-//								DownloadManager.execute(task);
-//								Platform.runLater(() -> controller.addDownloadItem(task));
-//							}
-//						} catch (IOException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				} catch (Exception e) {
-//
-//				}
 			}
 		}).start();
 	}
@@ -245,5 +252,54 @@ public class OptionsController {
 
 	private void updateCurrentPageCode(int pageCode) {
 		optionsCurrentPageText.setText("第 " + pageCode + " 页");
+	}
+
+	// 检验输入合法性
+	private void checkNumberInput(JFXTextField field) {
+		try {
+			String text = field.getText();
+			if (TextUtil.isEmpty(text))
+				return;
+			Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			MainApplication.showSnackbar("页码必须是整数");
+			field.clear();
+		}
+		int startValue = TextUtil.toInt(optionsStartPageCodeInput.getText());
+		int endValue = TextUtil.toInt(optionsEndPageCodeInput.getText());
+		if (startValue > endValue)
+			optionsEndPageCodeInput.setText(String.valueOf(startValue));
+	}
+	// 更新Site选择框
+	private void updateSiteCombo() {
+		sites = SiteRuleManager.instance().getSites();
+		String[] siteNames = new String[sites.size()];
+		for (int i = 0; i < sites.size(); i++)
+			siteNames[i] = sites.get(i).getTitle();
+		ObservableList items = FXCollections.observableArrayList(siteNames);
+		optionsSiteCombo.setItems(items);
+		optionsSiteCombo.getSelectionModel().selectFirst();
+	}
+	// 初始化品质选框
+	private void initQualityCombo() {
+		ObservableList items = FXCollections.observableArrayList(
+				"源文件",
+				"高品质",
+				"标准");
+		optionsQualityCombo.getItems().addAll(items);
+//		optionsQualityCombo.focusedProperty().addListener((obj, oldValue, newValue) -> {
+//			newValue.
+//		});
+		//optionsQualityCombo.set
+		//optionsQualityCombo.getSelectionModel().selectLast();
+
+	}
+
+	private Site getCurrentSite() {
+		return sites.get(optionsSiteCombo.getSelectionModel().getSelectedIndex());
+	}
+
+	public static String getUrl(Image image) {
+		return image.getUrl(imageUrlFlag);
 	}
 }

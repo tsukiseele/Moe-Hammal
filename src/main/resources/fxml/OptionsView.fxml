@@ -2,26 +2,32 @@
 
 <?import com.jfoenix.controls.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<VBox xmlns="http://javafx.com/javafx" alignment="CENTER">
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" alignment="CENTER">
     <HBox alignment="BOTTOM_CENTER" spacing="10">
         <padding> <Insets top="10" right="0" bottom="10" left="0"/> </padding>
-        <JFXComboBox id="optionsSiteCombo" style="-fx-background-color:#EEEEEE;" >
+
+        <JFXComboBox fx:id="optionsQualityCombo" style="-fx-background-color:#EEEEEE;" >
 
         </JFXComboBox>
 
-        <JFXTextField id="optionsSearchInput" promptText="Input keyword" labelFloat="true" alignment="CENTER">
+        <JFXComboBox fx:id="optionsSiteCombo" style="-fx-background-color:#EEEEEE;" >
+
+        </JFXComboBox>
+
+        <JFXTextField fx:id="optionsSearchInput" promptText="Input keyword" labelFloat="true" alignment="CENTER">
 
         </JFXTextField>
 
-        <JFXTextField id="optionsStartPageCodeInput" promptText="Start page" labelFloat="true" alignment="CENTER"
+        <JFXTextField fx:id="optionsStartPageCodeInput" promptText="Start page" labelFloat="true" alignment="CENTER"
                       style="-fx-max-width: 80;" >
             1
         </JFXTextField>
 
-        <JFXTextField id="optionsEndPageCodeInput" promptText="End page" labelFloat="true" alignment="CENTER"
+        <JFXTextField fx:id="optionsEndPageCodeInput" promptText="End page" labelFloat="true" alignment="CENTER"
                       style="-fx-max-width: 80;" >
             1
         </JFXTextField>
@@ -29,79 +35,25 @@
     <HBox alignment="BOTTOM_CENTER" spacing="10">
         <padding> <Insets top="10" right="0" bottom="10" left="0"/> </padding>
 
-
-        <JFXButton id="optionsRefreshRuleButton" text="刷新规则" onAction="#onRefreshRuleClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
+        <JFXButton fx:id="optionsRefreshRuleButton" text="刷新规则" onAction="#onRefreshRuleClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
                    style="-fx-text-fill: #000000; -fx-font-size:14px; -fx-background-color:#EEEEEE; "
                    prefWidth="80" prefHeight="40">
         </JFXButton>
 
-        <JFXButton id="optionsSearchButton" text="搜索" onAction="#onSearchClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
+        <JFXButton fx:id="optionsSearchButton" text="搜索" onAction="#onSearchClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
                    style="-fx-text-fill: #000000; -fx-font-size:14px; -fx-background-color:#EEEEEE;"
                    prefWidth="80" prefHeight="40">
         </JFXButton>
 
-        <JFXButton id="optionsDownloadButton" text="下载" onAction="#onDownloadClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
+        <JFXButton fx:id="optionsDownloadButton" text="下载" onAction="#onDownloadClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
                    style="-fx-text-fill: #000000; -fx-font-size:14px; -fx-background-color:#EEEEEE; "
                    prefWidth="80" prefHeight="40">
         </JFXButton>
     </HBox>
     <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label id="optionsCurrentPageText" textFill="#FF4081" style="-fx-padding: 5, 5, 5, 5;"> </Label>
+        <JFXSpinner fx:id="optionsLoadProgress" visible="false">
+
+        </JFXSpinner>
+        <Label fx:id="optionsCurrentPageText" textFill="#FF4081" style="-fx-padding: 5, 5, 5, 5;"> </Label>
     </HBox>
 </VBox>
-
-        <!--<FlowPane alignment="TOP_CENTER" prefHeight="32.0" prefWidth="473.0">-->
-            <!--<children>-->
-                <!--<ChoiceBox fx:id="optionsRuleSelect">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="5.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</ChoiceBox>-->
-                <!--<TextField fx:id="optionsSearchEdit" prefWidth="200.0">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="5.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</TextField>-->
-                <!--<TextField fx:id="optionsPageCode" prefHeight="30.0" prefWidth="75.0">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="5.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</TextField>-->
-                <!--<Label text="页">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="5.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</Label>-->
-                <!--<Button mnemonicParsing="false" onAction="#onSearchClick" text="搜索">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="10.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</Button>-->
-                <!--<Button mnemonicParsing="false" onAction="#onNextPage" text="下一页">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets right="10.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</Button>-->
-                <!--<Button mnemonicParsing="false" onAction="#onPerviousPage" text="上一页" />-->
-            <!--</children>-->
-            <!--<VBox.margin>-->
-                <!--<Insets top="10.0" />-->
-            <!--</VBox.margin>-->
-        <!--</FlowPane>-->
-        <!--<FlowPane alignment="BOTTOM_LEFT">-->
-            <!--<children>-->
-                <!--<Label fx:id="currentPageText" text="第1页">-->
-                    <!--<FlowPane.margin>-->
-                        <!--<Insets left="10.0" right="10.0" />-->
-                    <!--</FlowPane.margin>-->
-                <!--</Label>-->
-                <!--<Button alignment="CENTER" mnemonicParsing="false" onAction="#onDownloadAllClick" text="下载所有" />-->
-            <!--</children>-->
-            <!--<VBox.margin>-->
-                <!--<Insets top="10.0" />-->
-            <!--</VBox.margin>-->
-            <!--<children>-->
-                <!--<JFXButton text="456">-->
-                <!--</JFXButton>-->
-            <!--</children>-->
-        <!--</FlowPane>-->

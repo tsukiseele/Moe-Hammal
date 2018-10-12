@@ -5,9 +5,7 @@ import com.tsukiseele.moecrawler.bean.Site;
 import com.tsukiseele.moecrawler.utils.OkHttpUtil;
 import com.tsukiseele.moecrawler.utils.TextUtil;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,9 +39,30 @@ public abstract class Crawler implements Serializable {
 	public abstract Site getSite();
 	
 	protected abstract String onResponse(Section section, String html);
-	
+
+	public InputStream requestByteStream(String url) throws IOException {
+		OkHttpClient client = OkHttpUtil.getOkHttpClient();
+		Request request = new Request.Builder()
+				.headers(getHeaders(getSite()))
+				.url(url)
+				.get()
+				.build();
+		Response response = client.newCall(request).execute();
+		return response.body().byteStream();
+	}
+	public Reader requestCharStream(String url) throws IOException {
+
+		OkHttpClient client = OkHttpUtil.getOkHttpClient();
+		Request request = new Request.Builder()
+				.headers(getHeaders(getSite()))
+				.url(url)
+				.get()
+				.build();
+		Response response = client.newCall(request).execute();
+		return response.body().charStream();
+	}
+
 	protected String request(String url) throws IOException {
-		System.out.println(url);
 		// 请求网页
 		OkHttpClient client = OkHttpUtil.getOkHttpClient();
 		Request request = new Request.Builder()
@@ -125,7 +144,7 @@ public abstract class Crawler implements Serializable {
 		int pace = 1;
 		
 		// 替换页码
-		Matcher pageMatcher = REGEX_CONTENT_PAGE.matcher(indexUrl);
+		Matcher pageMatcher = PATTERN_CONTENT_PAGE.matcher(indexUrl);
 		if (pageMatcher.find()) {
 			int groupCount = pageMatcher.groupCount();
 			int[] ints = new int[] {0, 1};
@@ -135,7 +154,6 @@ public abstract class Crawler implements Serializable {
 					ints[i - 1] = Integer.parseInt(group);
 			}
 			correct = ints[0];
-
 			pace = ints[1];
 		}
 		// 页码值 (当前页码 + 起始页码) * 修正码
@@ -149,7 +167,7 @@ public abstract class Crawler implements Serializable {
 	public static String replaceSearchKeyword(String indexUrl, String keyword) {
 		// 关键字为空，则使用默认关键字
 		if (TextUtil.isEmpty(keyword)) {
-			Matcher keywordMatcher = REGEX_CONTENT_KEYWORD.matcher(indexUrl);
+			Matcher keywordMatcher = PATTERN_CONTENT_KEYWORD.matcher(indexUrl);
 			if (keywordMatcher.find())
 				keyword = keywordMatcher.group();
 		}

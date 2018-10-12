@@ -1,6 +1,7 @@
 package com.tsukiseele.moecrawler.bean;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.MalformedJsonException;
 import com.tsukiseele.moecrawler.utils.FileUtil;
 import com.tsukiseele.moecrawler.utils.RegexUtil;
 import com.tsukiseele.moecrawler.utils.TextUtil;
@@ -18,7 +19,8 @@ public class Site implements Serializable {
 	public static final String FLAG_STATE_OK = "flagStateOk";
 	public static final String FLAG_STATE_INSTABLE = "flagStateInstable";
 	public static final String FLAG_STATE_ABROAD = "flagStateAbroad";
-	public static final String FLAG_LOAD_JS = "flagLoadJs";
+	public static final String FLAG_LOAD_JS = "loadJS";
+	public static final String FLAG_DEBUG = "debug";
 	
 	private String title;
 	private int id;
@@ -34,7 +36,7 @@ public class Site implements Serializable {
 	private Section homeSection;
 	private Section searchSection;
 	private Map<String, Section> extraSections;
-	
+
 	public static Site fromJSON(String json) {
 		Gson gson = new Gson();
 		Site site = gson.fromJson(json, Site.class);
@@ -48,8 +50,12 @@ public class Site implements Serializable {
 	}
 	
 	public static Site fromJSON(File jsonfile) throws IOException {
-		return fromJSON(FileUtil.readText(jsonfile.getAbsolutePath(), "UTF-8"));
-		
+		IOException exception = null;
+		try {
+			return fromJSON(FileUtil.readText(jsonfile.getAbsolutePath(), "UTF-8"));
+		} catch (IOException e) {
+			throw new IOException("规则加载失败：" + jsonfile.getName() + "\n", e);
+		}
 	}
 	
 	private void reuseSection(Section section) {
@@ -71,6 +77,7 @@ public class Site implements Serializable {
 	public boolean hasFlag(String flag) {
 		if (TextUtil.isEmpty(this.flag) || TextUtil.isEmpty(flag))
 			return false;
+
 		return this.flag.contains(flag);
 	}
 	

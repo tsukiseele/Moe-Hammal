@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:id="imageViewerContainer" alignment="CENTER">
+    <JFXSpinner fx:id="imageViewerLoading" visible="false" prefWidth="256" prefHeight="256">
+
+    </JFXSpinner>
+
+    <ImageView fx:id="imageViewerContent">
+
+    </ImageView>
+</StackPane>

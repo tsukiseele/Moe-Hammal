@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tsukiseele.moehammal.config.Config.PATH_SOURCE_RULES;
+import static com.tsukiseele.moehammal.app.Config.PATH_SOURCE_RULES;
 
 public class SiteRuleManager {
 	private static final SiteRuleManager MANAGER = new SiteRuleManager();
@@ -18,6 +18,7 @@ public class SiteRuleManager {
 	private SiteRuleManager() {
 		loadRule();
 	}
+
 	public void loadRule() {
 		sites.clear();
 		List<File> rules = FileUtil.scanDirectory(PATH_SOURCE_RULES, ".json");
@@ -27,8 +28,8 @@ public class SiteRuleManager {
 					Site site = Site.fromJSON(FileUtil.readText(rule.getAbsolutePath(), "UTF-8"));
 					site.setPath(rule.getAbsolutePath());
 					sites.add(site);
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					System.out.println("规则加载失败：" + rule.getName() + "\n" + e.toString());
 				}
 			}
 	}

@@ -126,13 +126,24 @@ public class FileUtil {
 		writeText(filePath, text, "UTF-8", false);
 	}
 
+	public static String readText(InputStream inputStream) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			String line;
+			while ((line = reader.readLine()) != null)
+				stringBuilder.append(line);
+		} finally {
+			close(reader);
+		}
+		return stringBuilder.toString();
+	}
+
 	public static String readText(String filePath, String charset) throws IOException {
 		BufferedReader reader = null;
 		StringBuilder text = new StringBuilder();
 		try {
-			reader = new BufferedReader(
-				new InputStreamReader(
-					new FileInputStream(filePath), charset));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), charset));
 			String line = null;
 			while ((line = reader.readLine()) != null)
 				text.append(line).append("\n");

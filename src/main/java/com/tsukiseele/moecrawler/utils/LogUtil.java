@@ -6,7 +6,28 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogUtil {
+	public enum Level {
+		VERBOSE(0),
+		DEBUG(1),
+		INFO(2),
+		WARN(3),
+		ERROR(4),
+		CLOSE(5);
 
+		private int level;
+
+		Level(int level) {
+			this.level = level;
+		}
+
+		public int getLevel() {
+			return level;
+		}
+
+		public String getName() {
+			return name();
+		}
+	}
 	private static Level level = Level.VERBOSE;
 	private static PrintStream logWriter;
 	private static String logFilePath;
@@ -25,12 +46,15 @@ public class LogUtil {
 	static {
 		logWriter = System.out;
 	}
+
 	public static Level getLevel() {
 		return level;
 	}
+
 	public static void setLevel(Level le) {
 		level = le;
 	}
+
 	public static void v(String tag, String message) {
 		if (level.getLevel() < 1) {
 			logWriter.println("[" + dateFormat.format(System.currentTimeMillis()) + "]" + ": " +  level.getName() + "  " + tag + "  " + message);
@@ -79,25 +103,6 @@ public class LogUtil {
 			}
 		}
 		return true;
-	}
-	public enum Level {
-		VERBOSE(0),
-		DEBUG(1),
-		INFO(2),
-		WARN(3),
-		ERROR(4),
-		CLOSE(5);
-
-		private int level;
-		private Level(int level) {
-			this.level = level;
-		}
-		public int getLevel() {
-			return level;
-		}
-		public String getName() {
-			return name();//.charAt(0);
-		}
 	}
 }
 

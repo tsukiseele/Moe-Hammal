@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
+    <center>
+        <StackPane fx:id="imageCatalogContent">
+
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" >
+            <padding> <Insets top="10" right="0" bottom="10" left="0"/> </padding>
+            <JFXSpinner fx:id="imageCatalogLoadProgress" visible="false">
+
+            </JFXSpinner>
+
+            <JFXButton fx:id="imageCatalogDownloadButton" text="下载" onAction="#onDownloadClick" buttonType="RAISED" ripplerFill="#EC407A" alignment="CENTER"
+                       style="-fx-text-fill: #000000; -fx-font-size:14px; -fx-background-color:#EEEEEE;"
+                       prefWidth="80" prefHeight="40">
+            </JFXButton>
+        </HBox>
+    </bottom>
+</BorderPane>

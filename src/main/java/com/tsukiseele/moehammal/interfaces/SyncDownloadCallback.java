@@ -21,7 +21,7 @@ public class SyncDownloadCallback implements DownloadCallback {
 
 	@Override
 	public void onProgress(DownloadInfo info) {
-		if (System.currentTimeMillis() - progressUpdateTime > 500) {
+		if (System.currentTimeMillis() - progressUpdateTime > 256) {
 			Platform.runLater(() -> {
 				callback.onProgress(info);
 			});

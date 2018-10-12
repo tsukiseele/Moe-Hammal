@@ -1,17 +1,7 @@
 package com.tsukiseele.moehammal.app;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.tsukiseele.moehammal.MainApplication;
-import com.tsukiseele.moehammal.config.Config;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import sun.applet.Main;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -27,7 +17,7 @@ public class InstanceControl {
 	public static boolean isRunning() {
 		try {
 			//获得实例标志文件
-			File lockFile = new File(Config.PATH_ROOT, "control.bin");
+			File lockFile = new File(Config.PATH_ROOT, "control");
 			lockFile.createNewFile();
 			lockFile.deleteOnExit();
 			//获得文件锁
@@ -42,13 +32,6 @@ public class InstanceControl {
 	// 检查应用是否是单例
 	public static boolean checkControl() {
 		if (InstanceControl.isRunning()) {
-//			JFXDialog dialog = new JFXDialog();
-//			JFXDialogLayout dialogLayout = new JFXDialogLayout();
-//			dialogLayout.setHeading(new Label(Config.APPLICTION_TITLE));
-//			dialogLayout.setBody(new Label("在您的计算机上已经启动过了本程序！" + "\n重复启动会过度消耗您的计算机资源。"));
-//			dialogLayout.setActions(new JFXButton("确定"));
-//			dialog.setContent(dialogLayout);
-//			dialog.show(new StackPane());
 			Alert alert = new Alert(Alert.AlertType.WARNING);
 			alert.setTitle(Config.APPLICTION_TITLE);
 			alert.setContentText("在您的计算机上已经启动过了本程序！" + "\n重复启动会过度消耗您的计算机资源。");

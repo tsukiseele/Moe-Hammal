@@ -5,10 +5,10 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" >
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml" >
     <children>
         <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER" >
-            <JFXMasonryPane fx:id="masonryPane" HSpacing="5" VSpacing="15" style="-fx-background-color: White">
+            <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="15" style="-fx-background-color: White">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             </JFXMasonryPane>
         </ScrollPane>

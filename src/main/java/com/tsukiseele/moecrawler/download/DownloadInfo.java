@@ -1,5 +1,6 @@
 package com.tsukiseele.moecrawler.download;
 import com.tsukiseele.moecrawler.utils.FileUtil;
+import okhttp3.Headers;
 
 import java.io.File;
 import java.io.Serializable;
@@ -38,6 +39,8 @@ public class DownloadInfo implements Serializable {
 	public int retryCount;
 	// 错误信息
 	public Exception exception;
+
+	public Headers headers = new Headers.Builder().build();
 	
 	private transient DownloadCallback callback;
 	

@@ -17,29 +17,41 @@ public class OkHttpUtil {
 	
 	public static OkHttpClient getOkHttpClient() {
 		if (client == null)
-			return client = new OkHttpClient.Builder()
-				.cookieJar(new CookieJar() {
-					private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
-					
-					@Override
-					public void saveFromResponse(HttpUrl httpUrl, List<Cookie> cookies) {
-						cookieStore.put(httpUrl.host(), cookies);
-					}
-					@Override
-					public List<Cookie> loadForRequest(HttpUrl httpUrl) {
-						List<Cookie> cookies = cookieStore.get(httpUrl.host());
-						return cookies == null ? new ArrayList<>() : cookieStore.get(httpUrl.host());
-					}
-				})
-				.retryOnConnectionFailure(true)
-				.readTimeout(20, TimeUnit.SECONDS)
-				.connectTimeout(15, TimeUnit.SECONDS)
-				.build();
+			return client = buildOkHttpClient();
 		return client;
 	}
 	
 	private OkHttpUtil() {
 		getOkHttpClient();
+	}
+
+	private static OkHttpClient buildOkHttpClient() {
+		return new OkHttpClient.Builder()
+				.retryOnConnectionFailure(true)
+				.readTimeout(20, TimeUnit.SECONDS)
+				.connectTimeout(15, TimeUnit.SECONDS)
+				.build();
+	}
+
+	public void setSaveCookie(boolean bool) {
+		if (bool) {
+			client = client.newBuilder().cookieJar(new CookieJar() {
+				private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
+
+				@Override
+				public void saveFromResponse(HttpUrl httpUrl, List<Cookie> cookies) {
+					cookieStore.put(httpUrl.host(), cookies);
+				}
+
+				@Override
+				public List<Cookie> loadForRequest(HttpUrl httpUrl) {
+					List<Cookie> cookies = cookieStore.get(httpUrl.host());
+					return cookies == null ? new ArrayList<>() : cookieStore.get(httpUrl.host());
+				}
+			}).build();
+		} else {
+			client = buildOkHttpClient();
+		}
 	}
 	
 	public static OkHttpUtil build() {

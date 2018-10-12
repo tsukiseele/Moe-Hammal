@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+
+import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -30,7 +32,16 @@ public class DownloadTask implements Runnable {
 	public DownloadTask(DownloadInfo info) {
 		this.info = info;
 	}
-	
+
+
+	public void addRequestHeader(String key, String value) {
+		info.headers.newBuilder().set(key, value);
+	}
+
+	public void addRequestHeaders(Headers headers) {
+		info.headers = headers;
+	}
+
 	@Override
 	public void run() {
 		BufferedInputStream bis = null;
@@ -42,7 +53,7 @@ public class DownloadTask implements Runnable {
 			
 			Request.Builder request = new Request.Builder()
 					.url(info.url)
-					.header("User-Agent", Crawler.getDefaultUserAgent())
+					.headers(info.headers)
 					.get();
 			// 如果该文件支持断点续传
 			if (info.totalLength > 0) {

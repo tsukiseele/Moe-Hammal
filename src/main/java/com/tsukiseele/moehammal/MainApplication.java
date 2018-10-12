@@ -3,9 +3,10 @@ package com.tsukiseele.moehammal;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.svg.SVGGlyphLoader;
+import com.tsukiseele.moehammal.app.Config;
+import com.tsukiseele.moehammal.app.CrashManager;
 import com.tsukiseele.moehammal.app.InstanceControl;
-import com.tsukiseele.moehammal.config.Config;
-import com.tsukiseele.moehammal.controls.RootController;
+import com.tsukiseele.moehammal.controls.MainController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -19,13 +20,18 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class MainApplication extends Application {
     @FXMLViewFlowContext
-    private static ViewFlowContext context;
+    private ViewFlowContext context;
+
+    private static JFXDecorator decorator;
 
     public static void main(String[] args) {
+        //LogUtil.setLevel(LogUtil.Level.CLOSE);
+        //WebDriverManager.instance().init(WebDriverManager.BROWSER_TYPE_FIREFOX);
         launch(args);
     }
 
@@ -43,14 +49,16 @@ public class MainApplication extends Application {
             context = new ViewFlowContext();
             context.register("Stage", stage);
 
-            Flow flow = new Flow(RootController.class);
+            Flow flow = new Flow(MainController.class);
             DefaultFlowContainer container = new DefaultFlowContainer();
             flow.createHandler(context).start(container);
             // 初始化顶层装饰
-            JFXDecorator decorator = new JFXDecorator(stage, container.getView());
+            decorator = new JFXDecorator(stage, container.getView());
             context.register("Decorator", decorator);
             decorator.setCustomMaximize(true);
-            Image icon = new Image(MainApplication.class.getResourceAsStream("/icons/icon.png"));
+            //Image icon = new Image(MainApplication.class.getResourceAsStream("/icons/icon.png"));
+            Image icon = new Image(new FileInputStream(
+                    new File(Config.PATH_SOURCE_IMAGES.getAbsolutePath(), "icon.png")));
             ImageView imageView = new ImageView(icon);
             imageView.setFitHeight(28);
             imageView.setFitWidth(28);
@@ -64,18 +72,17 @@ public class MainApplication extends Application {
             stylesheets.addAll(
                     MainApplication.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
                     MainApplication.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                    MainApplication.class.getResource("/css/moehammal-main.css").toExternalForm());
+                    MainApplication.class.getResource("/css/moehammal-main.css").toExternalForm()
+            );
 
             stage.setScene(scene);
             stage.setOnCloseRequest(event -> System.exit(0));
             stage.setMinWidth(1080);
             stage.setMinHeight(800);
             stage.show();
-        }
-    }
 
-    public static ViewFlowContext getContext() {
-        return context;
+            Thread.currentThread().setUncaughtExceptionHandler(new CrashManager());
+        }
     }
 
     public static void showSnackbar(Pane pane, String message) {
@@ -83,6 +90,10 @@ public class MainApplication extends Application {
     }
 
     public static void showSnackbar(String message) {
-        showSnackbar((JFXDecorator) context.getRegisteredObject("Decorator"), message);
+        showSnackbar(decorator, message);
+    }
+
+    public static JFXDecorator getDecorator() {
+        return decorator;
     }
 }

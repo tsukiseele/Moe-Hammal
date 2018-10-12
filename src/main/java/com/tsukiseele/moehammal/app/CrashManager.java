@@ -10,10 +10,10 @@ public class CrashManager implements Thread.UncaughtExceptionHandler {
 	public void uncaughtException(Thread t, Throwable e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
-		System.out.println("Crash: " + sw);
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle(" Error! ");
-		alert.setContentText(" 程序出现致命异常，崩溃信息：\n" + sw.toString());
+		alert.setHeaderText(" 程序出现致命错误！抛出如下异常 ");
+		alert.setContentText(sw.toString());
 		alert.showAndWait();
 	}
 }

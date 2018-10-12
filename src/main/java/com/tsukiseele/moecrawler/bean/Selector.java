@@ -27,14 +27,14 @@ public class Selector implements Serializable {
 			String fun = null;
 			String attr = null;
 			// 提取选择器
-			selector = RegexUtil.matchesText(this.selector, Const.REGEX_SELECTOR);
+			selector = RegexUtil.matchesText(this.selector, Const.PATTERN_SELECTOR);
 			// 提取选择方法
-			Matcher matcher = Const.REGEX_FUN.matcher(this.selector);
+			Matcher matcher = Const.PATTERN_FUN.matcher(this.selector);
 			if (matcher.find()) {
 				switch (matcher.group().trim()) {
 					case "attr" :
 						fun = "attr";
-						attr = RegexUtil.matchesText(this.selector, Const.REGEX_ATTR);
+						attr = RegexUtil.matchesText(this.selector, Const.PATTERN_ATTR);
 						break;
 					case "html" :
 						fun = "html";

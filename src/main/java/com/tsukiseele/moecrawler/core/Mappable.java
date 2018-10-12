@@ -6,10 +6,11 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public abstract class Mappable {
+	private String type;
+
 	public abstract String getCatalogUrl();
 	public abstract String getExtraUrl();
-	private String type;
-	
+
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -25,7 +26,7 @@ public abstract class Mappable {
 	public boolean hasExtra() {
 		return !TextUtil.isEmpty(getExtraUrl());
 	}
-	
+
 	public void fillTo(Mappable mappable) {
 		if (mappable == null)
 			return;

@@ -94,7 +94,7 @@
 }
 
 .jfx-snackbar-action {
-    -fx-text-fill: #FF4081;
+    -fx-text-fill: #000000;
 }
 
 /*******************************************************************************
@@ -125,17 +125,16 @@
 
 .animated-burgers .jfx-hamburger StackPane {
     /*-fx-background-color: #5264AE;*/
-    -fx-background-color: #FF4081;
+    -fx-background-color: #000000;
     -fx-background-radius: 4px;
 }
 
 .animated-burgers .jfx-rippler {
-    /*-jfx-rippler-fill: #5264AE;*/
-    -jfx-rippler-fill: #FF4081;
+    -jfx-rippler-fill: #5264AE;
 }
 
 .icons-badge .badge-pane {
-    -fx-background-color: #FF4081;
+    -fx-background-color: #000000;
     -fx-background-radius: 23;
     -fx-pref-width: 23;
     -fx-pref-height: 23;
@@ -177,7 +176,7 @@
     -fx-font-size: 22.0;
     /*-fx-font-weight: NONE;*/
     /*-fx-background-color: #5264AE;*/
-    -fx-background-color: #FF4081;
+    -fx-background-color: #212121;
     -fx-pref-width: 100.0%;
     -fx-pref-height: 64.0px;
 }
@@ -311,10 +310,10 @@
 *                                                                              *
 *******************************************************************************/
 
-.jfx-rippler {
+/*.jfx-rippler {
 	-fx-rippler-fill: #5264AE;
 	-fx-mask-type: RECT;
-}
+}*/
 .jfx-rippler:hover {
     -fx-cursor: hand;
 }
@@ -402,34 +401,18 @@
 .jfx-text-field, .jfx-password-field, .jfx-text-area {
     -fx-background-color: transparent;
     -fx-font-weight: BOLD;
-    /*-fx-prompt-text-fill: #808080;*/
-    -fx-prompt-text-fill: #F06292;
+    -fx-prompt-text-fill: #808080;
     -fx-alignment: top-left;
     -fx-max-width: 300.0;
     -fx-pref-width: 300.0;
-    /*-jfx-focus-color: ;*/
-    -jfx-focus-color: #EC407A;
-    /*-jfx-unfocus-color: #4d4d4d;*/
-    -jfx-unfocus-color: #F06292;
+    -jfx-focus-color: #4059A9;
+    /*-jfx-focus-color: White;*/
+    -jfx-unfocus-color: #4d4d4d;
 }
 
 .jfx-text-area .viewport {
     -fx-background-color: #F4F4F4;
 }
-
-/*******************************************************************************
-*                                                                              *
-* JFX ComboBox                                                            *
-*                                                                              *
-*******************************************************************************/
-
-.jfx-combo-box {
-    -jfx-focus-color: -pink-400;
-    -jfx-unfocus-color: Black;
-    -fx-prompt-text-fill: Black;
-    -fx-font-weight: BOLD;
-}
-
 
 /*******************************************************************************
 *                                                                              *
@@ -767,14 +750,12 @@
 .combo-box-popup .list-view .jfx-list-cell .custom-jfx-list-view-icon,
 .combo-box-popup .list-view .jfx-list-cell:filled:hover .custom-jfx-list-view-icon,
 .combo-box-popup .list-view .jfx-list-cell:selected .custom-jfx-list-view-icon {
-    /*-fx-fill: #5264AE;*/
-    -fx-fill: #F06292;
+    -fx-fill: #5264AE;
 }
 
 .combo-box-popup .list-view .jfx-list-cell:odd:selected > .jfx-rippler > StackPane,
 .combo-box-popup .list-view .jfx-list-cell:even:selected > .jfx-rippler > StackPane {
-    /*-fx-background-color: rgba(0.0, 0.0, 255.0, 0.2);*/
-    -fx-background-color: #F062927F;
+    -fx-background-color: rgba(0.0, 0.0, 255.0, 0.2);
 }
 
 .combo-box-popup .list-view .jfx-list-cell {
@@ -787,8 +768,7 @@
 }
 
 .combo-box-popup .list-view .jfx-list-cell .jfx-rippler {
-    /*-jfx-rippler-fill: #5264AE;*/
-    -jfx-rippler-fill: #F06292;
+    -jfx-rippler-fill: #5264AE;
 }
 
 /*******************************************************************************
@@ -799,8 +779,7 @@
 
 .jfx-decorator {
     /*-fx-decorator-color: derive(#5264AE, -20%);*/
-    /*-fx-decorator-color: derive(#FF4081, -20%);*/
-    -fx-decorator-color: derive(#FF4081, 0%);
+    -fx-decorator-color: derive(#000000, -20%);
 }
 
 .jfx-decorator .jfx-decorator-buttons-container {
@@ -814,8 +793,8 @@
 
 .jfx-decorator .jfx-decorator-title-container .jfx-decorator-text {
     -fx-fill: WHITE;
-    -fx-font-size: 16;
-    /*-fx-font-family: "";*/
+    -fx-font-size: 15;
+    -fx-font-family: -apple-system;
 }
 
 .jfx-decorator .jfx-decorator-title-container .jfx-svg-glyph {

@@ -1,7 +1,7 @@
 package com.tsukiseele.moehammal.app.console;
 
 import com.tsukiseele.moehammal.bean.Image;
-import com.tsukiseele.moehammal.config.Config;
+import com.tsukiseele.moehammal.app.Config;
 import com.tsukiseele.moecrawler.core.Crawler;
 import com.tsukiseele.moecrawler.core.MoeParser;
 import com.tsukiseele.moecrawler.MoeCrawler;
@@ -43,7 +43,6 @@ public class ConsoleLauncher {
 		// 初始化爬虫
 		crawler = MoeCrawler.with(site)
 				.params(-1, "aki99");
-				//.commit();
 
 		// 构造解析器
 		MoeParser<Image> parser = crawler.buildParser(Image.class);
