@@ -4,7 +4,7 @@
     "version": 1,
     "author": "TsukiSeele",
     "rating": "S",
-    "remark": "Booru",
+    "remarks": "Booru",
     "flag": "",
     "requestHeaders": {
         "Referer": "https://nhentai.net/",
@@ -14,41 +14,35 @@
         "indexUrl": "https://nhentai.net/?page={page:0}",
         "gallerySelectors": {
             "title" : {
-				"selector" : "#(a.cover > div.caption).text"
+				"selector": "$(a.cover > div.caption).text"
 			} ,
-            "previewUrl" : {
-				"selector" : "#(a.cover).html" ,
-				"capture" : "//t.nhentai.net/galleries/\\d+/thumb.(jpg|jpeg|png|gif)" ,
-				"replacement" : "https:$0"
+            "coverUrl": {
+				"selector": "$(a.cover).html" ,
+				"capture": "//t.nhentai.net/galleries/\\d+/thumb.(jpg|jpeg|png|gif)" ,
+				"replacement": "https:$0"
 			} ,
-            "groupUrl": {
-                "selector" : "#(div.gallery > a).attr(href)" ,
-				"capture" : ".*" ,
-				"replacement" : "https://nhentai.net$0"
+            "catalogUrl": {
+                "selector": "$(div.gallery > a).attr(href)" ,
+				"capture": ".*" ,
+				"replacement": "https://nhentai.net$0"
             }
         },
         "catalogSelectors": {
             "title": {
-                "selector": "#(input[name=comment[post_id]]).attr(value)",
-                "capture": "(.*)",
-                "replacement": "yande.re $1"
+                "selector": "$(.thumb-container > .gallerythumb).attr(href)",
+                "capture" : "/\\w+/\\w+/(\\w+)/" ,
+				"replacement" : "$1"
             },
-            "label": {
-                "selector": "#(img#image).attr(alt)"
+            "tags": {
+                "selector": "$(img#image).attr(alt)"
             },
-            "simpleUrl": {
-                "selector": "#(img#image).attr(src)"
+            "coverUrl": {
+                "selector": "$(a.gallerythumb > img.lazyload).attr(data-src)"
             },
-            "compressUrl": {
-                "selector": "#(li > a#highres).attr(href)"
-            },
-            "fileUrl": {
-                "selector": "#(li > a#png).attr(href)"
-            },
-            "datetime": {
-                "selector": "#(script#forum-posts-latest).html",
-                "capture": "(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2})",
-                "replacement": "$1 $2"
+            "originUrl": {
+                "selector": "$(a.gallerythumb > img).attr(data-src)", 
+				"capture": "(https?://)t(.nhentai.net/galleries/\\d+/\\d+)t(.\\w+)",
+                "replacement": "$1i$2$3"
             }
         }
     },
