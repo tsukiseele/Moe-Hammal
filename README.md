@@ -30,19 +30,24 @@
 ```js
 // 链接请求头，可以在这里定义Cookie以供登陆
 "requestHeaders": {
-"键": "值"
+  "键": "值"
 } 
 ```
   - 定义内容选择器  
 所有的资源获取都是依靠内容选择器完成
 ```js
 "homeSection" : {
+  // 索引的URL规则，可以使用{page:a, b}以及{keyword:}占位符
   "indexUrl": "",
+    // 在这里包裹画廊的选择器
     "gallerySelectors": {
-"previewUrl": {
-"selector": "$(.thumb > img).attr(src)"
-}
-}
+      // 下面这行描述了获取封面图片链接的方式
+      "previewUrl": {
+        "selector": "$(.thumb > img).attr(src)"
+      }
+      // 在下面定义更多的内容选择器
+    }
+  }
 }
 ```
 - 作者的话  
