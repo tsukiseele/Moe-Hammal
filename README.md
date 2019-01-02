@@ -38,13 +38,13 @@
 ```js
 // 主页部分定义
 "homeSection" : {
-	// 索引的URL规则，可以使用{page:a, b}以及{keyword:}占位符
-	"indexUrl": "",
-		// 在这里包裹画廊的选择器
-		"gallerySelectors": {
-			// 下面这行描述了获取封面图片链接的方式
-			"previewUrl": {
-				"selector": "$(.thumb > img).attr(src)"
+    // 索引的URL规则，可以使用{page:a, b}以及{keyword:}占位符
+    "indexUrl": "",
+        // 在这里包裹画廊的选择器
+        "gallerySelectors": {
+            // 下面这行描述了获取封面图片链接的方式
+            "previewUrl": {
+                "selector": "$(.thumb > img).attr(src)"
 			}
 			// 在下面定义更多的内容选择器
 		}
