@@ -1,5 +1,5 @@
 # <center>Moe-Hammal​ Alpha</center>
-#### Moe-Hammal是一个使用JavaFX开发的插件式的轻量级图片抓取应用，可以很容易实现ACG图片网站和漫画网站的资源抓取，并提供完善的下载功能。
+### Moe-Hammal是一个使用JavaFX开发的插件式的轻量级图片抓取应用，可以很容易实现ACG图片网站和漫画网站的资源抓取，并提供完善的下载功能。
 ![Moe-Hammal Alpha](https://raw.githubusercontent.com/TsukiSeele/Moe-Hammal/master/simple/simple_0.png)
 ***
 1. 下载  
