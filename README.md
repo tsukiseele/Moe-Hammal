@@ -1,4 +1,4 @@
-<center># Moe-Hammal​ Alpha</center>
+# Moe-Hammal​ Alpha
 ### Moe-Hammal是一个使用JavaFX开发的插件式的轻量级图片抓取应用，可以很容易实现ACG图片网站和漫画网站的资源抓取，并提供完善的下载功能。
 ![Moe-Hammal Alpha](https://raw.githubusercontent.com/TsukiSeele/Moe-Hammal/master/simple/simple_0.png)
 ***
@@ -30,24 +30,24 @@
 ```js
 // 链接请求头，可以在这里定义Cookie以供登陆
 "requestHeaders": {
-  "键": "值"
+	"键": "值"
 } 
 ```
   - 定义内容选择器  
 所有的资源获取都是依靠内容选择器完成
 ```js
 "homeSection" : {
-  // 索引的URL规则，可以使用{page:a, b}以及{keyword:}占位符
-  "indexUrl": "",
-    // 在这里包裹画廊的选择器
-    "gallerySelectors": {
-      // 下面这行描述了获取封面图片链接的方式
-      "previewUrl": {
-        "selector": "$(.thumb > img).attr(src)"
-      }
-      // 在下面定义更多的内容选择器
-    }
-  }
+	// 索引的URL规则，可以使用{page:a, b}以及{keyword:}占位符
+	"indexUrl": "",
+		// 在这里包裹画廊的选择器
+		"gallerySelectors": {
+			// 下面这行描述了获取封面图片链接的方式
+			"previewUrl": {
+				"selector": "$(.thumb > img).attr(src)"
+			}
+			// 在下面定义更多的内容选择器
+		}
+	}
 }
 ```
 - 作者的话  
