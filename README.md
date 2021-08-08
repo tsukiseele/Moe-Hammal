@@ -5,7 +5,7 @@
 1. 下载发布版本
 
 2. 注意事项  
-  - 安装Java运行时环境，[下载](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)下载
+  - 安装Java运行时环境
 
 3. 自定义插件
   - 须知
@@ -36,3 +36,4 @@
 // 主页部分定义
 "homeSection" : {
     // 索引的URL规则，可以使用{page:a, b}
+}
